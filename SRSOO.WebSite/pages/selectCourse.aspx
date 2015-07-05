@@ -37,8 +37,8 @@
                 <p>&nbsp;&nbsp;</p>
                 <input type="button" onclick="moveToLeft()" value="<" />
                 <input type="button" onclick="moveToRight()" value=">" />
-                <input type="button" onclick="moveAllToLeft()" value="<<" />
-                <input type="button" onclick="moveAllToRight()" value=">>" />
+                <%--<input type="button" onclick="moveAllToLeft()" value="<<" />
+                <input type="button" onclick="moveAllToRight()" value=">>" />--%>
             </div>
             <div style="margin: 4px; float: left;">
                 <p>RegisteredFor</p>
@@ -58,7 +58,10 @@
         });
 
         loadSchedule();
-    });    //从服务器加载选课列表    function loadSchedule() {
+        loadStudentInfo();
+    });
+    //从服务器加载选课列表
+    function loadSchedule() {
         $.post(
             "selectCourse.aspx?Action=LoadSchedule",
             function (reslut) {
@@ -67,8 +70,29 @@
                 
             }
         );
-    }    //从服务器加载当前登陆学生已选课程    function loadResigistion() {
-    }    function moveToLeft() {
+    }
+    //从服务器加载当前登陆学生已选课程
+    function loadResigistion() {
+
+
+
+    }
+    function loadStudentInfo()
+    //显示学生ID，姓名。
+    {
+        $.post(
+            "selectCourse.aspx?Action=LoadStudentInfo",
+             function (reslut) {
+                 var json = $.parseJSON(reslut);
+                $.liger.get("ID").setValue(json.Id);
+                $.liger.get("StudentName").setValue(json.Name);
+                liger.get("listbox2").setData(json.Attends);
+             }
+            );
+
+    }
+
+    function moveToLeft() {
         var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
         var selecteds = box2.getSelectedItems();
         if (!selecteds || !selecteds.length) return;
@@ -82,18 +106,20 @@
         box1.removeItems(selecteds);
         box2.addItems(selecteds);
     }
-    function moveAllToLeft() {
-        var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
-        var selecteds = box2.data;
-        if (!selecteds || !selecteds.length) return;
-        box1.addItems(selecteds);
-        box2.removeItems(selecteds);
-    }
-    function moveAllToRight() {
-        var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
-        var selecteds = box1.data;
-        if (!selecteds || !selecteds.length) return;
-        box2.addItems(selecteds);
-        box1.removeItems(selecteds);
-    }</script>
+    //function moveAllToLeft() {
+    //    var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
+    //    var selecteds = box2.data;
+    //    if (!selecteds || !selecteds.length) return;
+    //    box1.addItems(selecteds);
+    //    box2.removeItems(selecteds);
+    //}
+    //function moveAllToRight() {
+    //    var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
+    //    var selecteds = box1.data;
+    //    if (!selecteds || !selecteds.length) return;
+    //    box2.addItems(selecteds);
+    //    box1.removeItems(selecteds);
+    //}
+
+</script>
 </html>

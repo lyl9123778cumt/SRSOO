@@ -15,6 +15,7 @@ namespace SRSOO.IDAL
             string className = AssemblyName + "." + "UserDAO";
             return (IUser)Assembly.Load(AssemblyName).CreateInstance(className);
         }
+       
 
         public static ICourse CreateCourseDAO()
         {
@@ -25,6 +26,11 @@ namespace SRSOO.IDAL
         {
             string className = AssemblyName + "." + "ScheduleDAO";
             return (ISchedule)Assembly.Load(AssemblyName).CreateInstance(className);
+        }
+        public static IStudent CreateStudentDAO()
+        {
+            string className = AssemblyName + "." + "StudentDAO";
+            return (IStudent)Assembly.Load(AssemblyName).CreateInstance(className);
         }
     }
 }
