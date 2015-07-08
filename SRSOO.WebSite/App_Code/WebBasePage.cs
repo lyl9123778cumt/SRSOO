@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public class WebBasePage: System.Web.UI.Page //统一处理没有登陆的权限问题
+public class WebBasePage: System.Web.UI.Page
 {
     public User CurrentUser
     {
@@ -13,9 +13,10 @@ public class WebBasePage: System.Web.UI.Page //统一处理没有登陆的权限
         {
             if (Session["CurrentUser"] == null)
             {
-                //转向登录界面,自己写
-               
-            return null;
+                //转回登录
+                Response.Redirect("../Login.aspx");
+                return null ;
+
             }
             else 
             {

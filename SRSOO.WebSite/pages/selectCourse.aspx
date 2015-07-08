@@ -9,7 +9,6 @@
     <link href="../Sciript/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" />
     <script src="../sciript/jquery/jquery-1.7.1.min.js"></script>
     <script src="../Sciript/ligerUI/js/ligerui.min.js"></script>
-
     <script src="../sciript/jquery-validation/jquery.validate.min.js"></script>
     <script src="../sciript/jquery-validation/jquery.metadata.js"></script>
     <script src="../sciript/jquery-validation/messages_cn.js"></script>
@@ -26,7 +25,7 @@
         <div class="fields">
             <input data-type="text" data-label="StudentName" data-name="StudentName" validate="{required:true,minlength:5}" />
             <input data-type="text" data-label="ID Number" data-name="ID" validate="{required:true}" />
-            <input data-type="text" data-label="Total Course" data-name="TotalCourse" validate="{required:false}" />
+            <input data-type="text" data-label="TotalCourse" data-name="TotalCourse" validate="{required:false}" />
         </div>
         <div>
             <div style="margin: 4px; float: left;">
@@ -35,9 +34,10 @@
             </div>
             <div style="margin: 4px; float: left;" class="middle">
                 <p>&nbsp;&nbsp;</p>
-                <input type="button" onclick="moveToLeft()" value="<" />
+                <input type="button" onclick="moveToLeft()" value="<"  />
                 <input type="button" onclick="moveToRight()" value=">" />
-                <%--<input type="button" onclick="moveAllToLeft()" value="<<" />
+          
+<%--            <input type="button" onclick="moveAllToLeft()" value="<<" />
                 <input type="button" onclick="moveAllToRight()" value=">>" />--%>
             </div>
             <div style="margin: 4px; float: left;">
@@ -47,18 +47,20 @@
         </div>
     </form>
     <div class="liger-button" data-click="f_validate" data-width="150">Save</div>
+    
 </body>
 <script type="text/javascript">
     $(function () {
         $("#listbox1,#listbox2").ligerListBox({
             isShowCheckBox: true,
-            isMultiSelect: true,
+            isMultiSelect: false,
             width: 450,
             height: 140
         });
 
         loadSchedule();
-        loadStudentInfo();
+        LoadStudentInfo();
+        
     });
     //从服务器加载选课列表
     function loadSchedule() {
@@ -66,46 +68,47 @@
             "selectCourse.aspx?Action=LoadSchedule",
             function (reslut) {
                 var json = $.parseJSON(reslut);
-                liger.get("listbox1").setData(json);
-                
+                liger.get("listbox1").setData(json);                
             }
         );
     }
     //从服务器加载当前登陆学生已选课程
-    function loadResigistion() {
-
-
-
-    }
-    function loadStudentInfo()
-    //显示学生ID，姓名。
-    {
+    function LoadStudentInfo() {
         $.post(
             "selectCourse.aspx?Action=LoadStudentInfo",
-             function (reslut) {
-                 var json = $.parseJSON(reslut);
-                $.liger.get("ID").setValue(json.Id);
-                $.liger.get("StudentName").setValue(json.Name);
+            function (reslut) {
+                var json = $.parseJSON(reslut);
+                $.ligerui.get("ID").setValue(json.Id);
+                $.ligerui.get("StudentName").setValue(json.Name);
                 liger.get("listbox2").setData(json.Attends);
-             }
-            );
-
+                var obj = json.Attends;
+                //计算课程总数
+                var m = json.Attends, count = 0;
+                for (var o in m) {
+                    if (m[o]) { count++ }
+                };
+                $.ligerui.get("TotalCourse").setValue(count);
+            }
+        );
     }
 
     function moveToLeft() {
         var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
         var selecteds = box2.getSelectedItems();
-        if (!selecteds || !selecteds.length) return;
+        // if (!selecteds || !selecteds.length) return;
         box2.removeItems(selecteds);
         box1.addItems(selecteds);
     }
     function moveToRight() {
         var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
         var selecteds = box1.getSelectedItems();
-        if (!selecteds || !selecteds.length) return;
+        var secNumber = selecteds[0].id;//获取到选中课程的选课号
+        var couNumber = selecteds[0].text.substr(0, 6);//获取到课程号
+        // if (!selecteds || !selecteds.length) return;
         box1.removeItems(selecteds);
         box2.addItems(selecteds);
     }
+    
     //function moveAllToLeft() {
     //    var box1 = liger.get("listbox1"), box2 = liger.get("listbox2");
     //    var selecteds = box2.data;
@@ -120,6 +123,7 @@
     //    box2.addItems(selecteds);
     //    box1.removeItems(selecteds);
     //}
+
 
 </script>
 </html>
